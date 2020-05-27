@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Дмитрий Мокров](https://up.htmlacademy.ru/javascript/20/user/612415).
-* Наставник: `Неизвестно`.
+* Наставник: [Виктон Кан](https://htmlacademy.ru/profile/viktorkan).
 
 ---
 
