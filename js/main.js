@@ -18,57 +18,41 @@ var randomNumber = function (from, to) {
   return Math.floor(from + Math.random() * (to - from + 1));
 };
 
+var generateRandomArr = function (data) {
+  var randomArr = [];
+  for (var i = 0; i < randomNumber(1, 5); i++) {
+    randomArr[i] = data[randomNumber(0, data.length - 1)];
+  }
+  return randomArr;
+};
+
 var createAds = function (number) {
   var ads = [];
 
-  for (var i = 1; i <= number; i++) {
-    var ad = {
+  for (var i = 0; i < number; i++) {
+    ads[i] = {
       'author': {
-        'avatar': null
+        'avatar': 'img/avatars/user0' + (i + 1) + '.png'
       },
       'offer': {
-        'title': null,
+        'title': 'Заголовок' + (i + 1),
         'address': null,
-        'price': null,
-        'type': null,
-        'rooms': null,
-        'guests': null,
-        'checkin': null,
-        'checkout': null,
-        'features': [],
-        'description': null,
-        'photos': []
+        'price': randomNumber(500, 1500),
+        'type': OFFER_TYPES[randomNumber(0, OFFER_TYPES.length - 1)],
+        'rooms': randomNumber(1, 4),
+        'guests': randomNumber(1, 5),
+        'checkin': OFFER_CHECKIN[randomNumber(0, OFFER_CHECKIN.length - 1)],
+        'checkout': OFFER_CHECKOUT[randomNumber(0, OFFER_CHECKOUT.length - 1)],
+        'features': generateRandomArr(OFFER_FEATURES),
+        'description': 'Описание' + (i + 1),
+        'photos': generateRandomArr(OFFER_PHOTOS)
       },
       'location': {
-        'x': null,
-        'y': null
+        'x': randomNumber(0, mapPins.scrollWidth),
+        'y': randomNumber(130, 650)
       }
     };
-
-    ad.author.avatar = 'img/avatars/user0' + i + '.png';
-    ad.offer.title = 'Заголовок';
-    ad.offer.price = randomNumber(500, 1500);
-    ad.offer.type = OFFER_TYPES[randomNumber(0, OFFER_TYPES.length - 1)];
-    ad.offer.rooms = randomNumber(1, 4);
-    ad.offer.guests = randomNumber(1, 5);
-    ad.offer.checkin = OFFER_CHECKIN[randomNumber(0, OFFER_CHECKIN.length - 1)];
-    ad.offer.checkout = OFFER_CHECKOUT[randomNumber(0, OFFER_CHECKOUT.length - 1)];
-
-    for (var k = 0; k < randomNumber(1, 5); k++) {
-      ad.offer.features.push(OFFER_FEATURES[randomNumber(0, OFFER_FEATURES.length - 1)]);
-    }
-
-    for (var l = 0; l < randomNumber(1, 5); l++) {
-      ad.offer.photos.push(OFFER_PHOTOS[randomNumber(0, OFFER_PHOTOS.length - 1)]);
-    }
-
-    ad.offer.description = 'Описание';
-    ad.location.x = randomNumber(0, mapPins.scrollWidth);
-    ad.location.y = randomNumber(130, 650);
-
-    ad.offer.address = ad.location.x + ', ' + ad.location.y;
-
-    ads.push(ad);
+    ads[i].offer.address = ads[i].location.x + ', ' + ads[i].location.y;
   }
 
   return ads;
@@ -86,11 +70,13 @@ var renderPin = function (ad) {
   return pinElement;
 };
 
-var ads = createAds(8);
-
-for (var m = 0; m < ads.length; m++) {
-  fragment.appendChild(renderPin(ads[m]));
-}
+var renderAds = function (arr) {
+  for (var i = 0; i < arr.length; i++) {
+    fragment.appendChild(renderPin(arr[i]));
+  }
+  mapPins.appendChild(fragment);
+};
 
 map.classList.remove('map--faded');
-mapPins.appendChild(fragment);
+var ads = createAds(8);
+renderAds(ads);
