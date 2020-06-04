@@ -30,13 +30,16 @@ var createAds = function (number) {
   var ads = [];
 
   for (var i = 0; i < number; i++) {
+    var locationX = randomNumber(0, mapPins.scrollWidth);
+    var locationY = randomNumber(130, 650);
+
     ads[i] = {
       'author': {
         'avatar': 'img/avatars/user0' + (i + 1) + '.png'
       },
       'offer': {
         'title': 'Заголовок' + (i + 1),
-        'address': null,
+        'address': locationX + ', ' + locationY,
         'price': randomNumber(500, 1500),
         'type': OFFER_TYPES[randomNumber(0, OFFER_TYPES.length - 1)],
         'rooms': randomNumber(1, 4),
@@ -48,11 +51,10 @@ var createAds = function (number) {
         'photos': generateRandomArr(OFFER_PHOTOS)
       },
       'location': {
-        'x': randomNumber(0, mapPins.scrollWidth),
-        'y': randomNumber(130, 650)
+        'x': locationX,
+        'y': locationY
       }
     };
-    ads[i].offer.address = ads[i].location.x + ', ' + ads[i].location.y;
   }
 
   return ads;
