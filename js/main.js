@@ -12,6 +12,7 @@ var PIN_HEIGHT = 70;
 var map = document.querySelector('.map');
 var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var fragment = document.createDocumentFragment();
 
 var randomNumber = function (from, to) {
@@ -38,7 +39,7 @@ var createAds = function (number) {
         'avatar': 'img/avatars/user0' + (i + 1) + '.png'
       },
       'offer': {
-        'title': 'Заголовок' + (i + 1),
+        'title': 'Заголовок ' + (i + 1),
         'address': locationX + ', ' + locationY,
         'price': randomNumber(500, 1500),
         'type': OFFER_TYPES[randomNumber(0, OFFER_TYPES.length - 1)],
@@ -82,3 +83,117 @@ var renderAds = function (arr) {
 map.classList.remove('map--faded');
 var ads = createAds(8);
 renderAds(ads);
+
+// Информация объявления
+
+var renderCard = function () {
+  var cardElement = cardTemplate.cloneNode(true);
+
+  var title = cardElement.querySelector('.popup__title');
+  if (ads[0].offer.title) {
+    title.textContent = ads[0].offer.title;
+  } else {
+    title.style.display = 'none';
+  }
+
+  var address = cardElement.querySelector('.popup__text--address');
+  if (ads[0].offer.address) {
+    address.textContent = ads[0].offer.address;
+  } else {
+    address.style.display = 'none';
+  }
+
+  var price = cardElement.querySelector('.popup__text--price');
+  if (ads[0].offer.price) {
+    price.textContent = ads[0].offer.price + '₽/ночь';
+  } else {
+    price.style.display = 'none';
+  }
+
+  if (ads[0].offer.type) {
+    var offerType = cardElement.querySelector('.popup__type');
+    switch (ads[0].offer.type) {
+      case 'palace':
+        offerType.textContent = 'Дворец';
+        break;
+
+      case 'flat':
+        offerType.textContent = 'Квартира';
+        break;
+
+      case 'house':
+        offerType.textContent = 'Дом';
+        break;
+
+      case 'bungalo':
+        offerType.textContent = 'Бунгало';
+        break;
+
+      default:
+        break;
+    }
+  } else {
+    offerType.style.display = 'none';
+  }
+
+  var capacity = cardElement.querySelector('.popup__text--capacity');
+  if (ads[0].offer.rooms && ads[0].offer.guests) {
+    capacity.textContent = ads[0].offer.rooms + ' комнаты для ' + ads[0].offer.guests + ' гостей';
+  } else {
+    capacity.style.display = 'none';
+  }
+
+  var time = cardElement.querySelector('.popup__text--time');
+  if (ads[0].offer.checkin && ads[0].offer.checkout) {
+    time.textContent = 'Заезд после ' + ads[0].offer.checkin + ', выезд до ' + ads[0].offer.checkout;
+  } else {
+    time.style.display = 'none';
+  }
+
+  var features = cardElement.querySelector('.popup__features');
+  if (ads[0].offer.features) {
+    for (var i = 0; i < ads[0].offer.features.length; i++) {
+      var text = ads[0].offer.features[i];
+      var feature = features.querySelector('li').cloneNode(false);
+      feature.textContent = text;
+      feature.className = 'popup__feature';
+      feature.classList.add('popup__feature--' + text);
+      features.appendChild(feature);
+    }
+    var emptyFeature = features.querySelector('li'); // удаляет первый пустой li из разметки
+    features.removeChild(emptyFeature);
+  } else {
+    features.style.display = 'none';
+  }
+
+  var description = cardElement.querySelector('.popup__description');
+  if (ads[0].offer.description) {
+    description.textContent = ads[0].offer.description;
+  } else {
+    description.style.display = 'none';
+  }
+
+  var photos = cardElement.querySelector('.popup__photos');
+  if (ads[0].offer.photos) {
+    for (var j = 0; j < ads[0].offer.photos.length; j++) {
+      var photo = photos.querySelector('img').cloneNode(true);
+      photo.src = ads[0].offer.photos[j];
+      photos.appendChild(photo);
+    }
+    var emptyImg = photos.querySelector('img'); // удаляет первый пустой img из разметки
+    photos.removeChild(emptyImg);
+  } else {
+    photos.style.display = 'none';
+  }
+
+  var avatar = cardElement.querySelector('.popup__avatar');
+  if (ads[0].author.avatar) {
+    avatar.src = ads[0].author.avatar;
+  } else {
+    avatar.style.display = 'none';
+  }
+
+  map.querySelector('.map__filters-container').insertAdjacentElement('beforebegin', cardElement);
+};
+
+renderCard();
