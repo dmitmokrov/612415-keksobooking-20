@@ -8,6 +8,9 @@ var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http:
 
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_TAIL_HEIGHT = 22;
 
 var map = document.querySelector('.map');
 var mapPins = document.querySelector('.map__pins');
@@ -50,8 +53,8 @@ var createAds = function (number) {
         'address': locationX + ', ' + locationY,
         'price': randomNumber(500, 1500),
         'type': OFFER_TYPES[randomNumber(0, OFFER_TYPES.length - 1)],
-        'rooms': randomNumber(1, 4),
-        'guests': randomNumber(1, 5),
+        'rooms': randomNumber(1, 3),
+        'guests': randomNumber(1, 3),
         'checkin': OFFER_CHECKIN[randomNumber(0, OFFER_CHECKIN.length - 1)],
         'checkout': OFFER_CHECKOUT[randomNumber(0, OFFER_CHECKOUT.length - 1)],
         'features': generateRandomArr(OFFER_FEATURES),
@@ -87,9 +90,8 @@ var renderAds = function (arr) {
   mapPins.appendChild(fragment);
 };
 
-map.classList.remove('map--faded');
+// Создание пинов
 var ads = createAds(8);
-renderAds(ads);
 
 // Добавление свойства
 var setProperty = function (node, data, property, value) {
@@ -159,4 +161,91 @@ var renderCard = function (card) {
   map.querySelector('.map__filters-container').insertAdjacentElement('beforebegin', cardElement);
 };
 
-renderCard(ads[0]);
+// Новое задание
+
+var adForm = document.querySelector('.ad-form');
+var adFormInputs = adForm.querySelectorAll('.ad-form fieldset');
+var mapFiltersInputs = document.querySelectorAll('.map__filters select, .map__filters fieldset');
+var mainPin = document.querySelector('.map__pin--main');
+var address = adForm.querySelector('#address');
+var rooms = adForm.querySelector('#room_number');
+var guests = adForm.querySelector('#capacity');
+
+var setDisable = function (arr) {
+  arr.forEach(function (elem) {
+    elem.disabled = true;
+  });
+};
+
+var setAble = function (arr) {
+  arr.forEach(function (elem) {
+    elem.disabled = false;
+  });
+};
+
+var setMapActiveState = function () {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  setAble(adFormInputs);
+  setAble(mapFiltersInputs);
+  renderAds(ads);
+  renderCard(ads[0]);
+};
+
+var setAddress = function (isMapActive) {
+  var mainPinX = Math.round(mainPin.offsetLeft + (MAIN_PIN_WIDTH / 2));
+  var mainPinY = Math.round(mainPin.offsetTop + (MAIN_PIN_HEIGHT / 2));
+
+  if (isMapActive) {
+    mainPinY += MAIN_PIN_TAIL_HEIGHT;
+  }
+  address.value = mainPinX + ', ' + mainPinY;
+};
+
+var validateGuests = function () {
+  guests.querySelectorAll('option').forEach(function (elem) {
+    elem.disabled = true;
+  });
+  if (rooms.value === '100') {
+    guests.querySelector('[value="0"]').disabled = false;
+    guests.querySelector('[value="0"]').selected = true;
+  } else {
+    for (var i = rooms.value; i > 0; i--) {
+      guests.querySelector('[value="' + i + '"]').disabled = false;
+    }
+  }
+};
+
+// Добавление атрибута disabled всем элементам ввода в формах .ad-form и .map__filters
+setDisable(adFormInputs);
+setDisable(mapFiltersInputs);
+
+// Добавление координат main pin в поле адреса
+setAddress();
+
+var mainPinMousedownHandler = function (evt) {
+  if (evt.button === 0) {
+    setMapActiveState();
+    setAddress(true);
+    validateGuests();
+  }
+  mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
+};
+
+var mainPinKeydownHandler = function (evt) {
+  if (evt.key === 'Enter') {
+    setMapActiveState();
+    setAddress(true);
+    validateGuests();
+  }
+  mainPin.removeEventListener('keydown', mainPinKeydownHandler);
+};
+// Переключение карты в активное состояние при клике левой кнопкой мыши на главный пин
+mainPin.addEventListener('mousedown', mainPinMousedownHandler);
+
+// Переключение карты в активное состояние при нажатии Enter
+mainPin.addEventListener('keydown', mainPinKeydownHandler);
+
+// Валидация количества комнат и гостей
+rooms.addEventListener('change', validateGuests);
+guests.addEventListener('change', validateGuests);
