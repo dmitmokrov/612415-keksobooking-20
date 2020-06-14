@@ -171,67 +171,80 @@ var address = adForm.querySelector('#address');
 var rooms = adForm.querySelector('#room_number');
 var guests = adForm.querySelector('#capacity');
 
-var setDisable = function (elem) {
-  elem.disabled = true;
+var setDisable = function (arr) {
+  arr.forEach(function (elem) {
+    elem.disabled = true;
+  });
 };
 
-var setAble = function (elem) {
-  elem.disabled = false;
+var setAble = function (arr) {
+  arr.forEach(function (elem) {
+    elem.disabled = false;
+  });
 };
 
 var setMapActiveState = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  adFormInputs.forEach(setAble);
-  mapFiltersInputs.forEach(setAble);
+  setAble(adFormInputs);
+  setAble(mapFiltersInputs);
   renderAds(ads);
   renderCard(ads[0]);
 };
 
 var setAddress = function (isMapActive) {
-  var MainPinX = Math.round(mainPin.offsetLeft + (MAIN_PIN_WIDTH / 2));
-  var MainPinY = Math.round(mainPin.offsetTop + (MAIN_PIN_HEIGHT / 2));
+  var mainPinX = Math.round(mainPin.offsetLeft + (MAIN_PIN_WIDTH / 2));
+  var mainPinY = Math.round(mainPin.offsetTop + (MAIN_PIN_HEIGHT / 2));
 
   if (isMapActive) {
-    MainPinY += MAIN_PIN_TAIL_HEIGHT;
+    mainPinY += MAIN_PIN_TAIL_HEIGHT;
   }
-  address.value = MainPinX + ', ' + MainPinY;
+  address.value = mainPinX + ', ' + mainPinY;
 };
 
 var validateGuests = function () {
-  if (rooms.value === '100' && guests.value !== '0') {
-    guests.setCustomValidity('Выберите пункт "не для гостей"');
-  } else if (guests.value > rooms.value) {
-    guests.setCustomValidity('Выберите меньшее число гостей');
-  } else if (guests.value === '0' && rooms.value !== '100') {
-    guests.setCustomValidity('Выберите большее число гостей');
+  guests.querySelectorAll('option').forEach(function (elem) {
+    elem.disabled = true;
+  });
+  if (rooms.value === '100') {
+    guests.querySelector('[value="0"]').disabled = false;
+    guests.querySelector('[value="0"]').selected = true;
   } else {
-    guests.setCustomValidity('');
+    for (var i = rooms.value; i > 0; i--) {
+      guests.querySelector('[value="' + i + '"]').disabled = false;
+    }
   }
 };
 
 // Добавление атрибута disabled всем элементам ввода в формах .ad-form и .map__filters
-adFormInputs.forEach(setDisable);
-mapFiltersInputs.forEach(setDisable);
+setDisable(adFormInputs);
+setDisable(mapFiltersInputs);
 
 // Добавление координат main pin в поле адреса
 setAddress();
 
-// Переключение карты в активное состояние при клике левой кнопкой мыши на главный пин
-mainPin.addEventListener('mousedown', function (evt) {
+var mainPinMousedownHandler = function (evt) {
   if (evt.button === 0) {
     setMapActiveState();
     setAddress(true);
+    validateGuests();
   }
-});
+  mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
+};
 
-// Переключение карты в активное состояние при нажатии Enter
-mainPin.addEventListener('keydown', function (evt) {
+var mainPinKeydownHandler = function (evt) {
   if (evt.key === 'Enter') {
     setMapActiveState();
     setAddress(true);
+    validateGuests();
   }
-});
+  mainPin.removeEventListener('keydown', mainPinKeydownHandler);
+};
+// Переключение карты в активное состояние при клике левой кнопкой мыши на главный пин
+mainPin.addEventListener('mousedown', mainPinMousedownHandler);
+
+// Переключение карты в активное состояние при нажатии Enter
+mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
 // Валидация количества комнат и гостей
 rooms.addEventListener('change', validateGuests);
