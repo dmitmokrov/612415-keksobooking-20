@@ -71,6 +71,15 @@ var createAds = function (number) {
   return ads;
 };
 
+var pinClickHandler = function (ad) {
+  var oldCard = document.querySelector('.map__card');
+  if (oldCard) {
+    oldCard.remove();
+  }
+  renderCard(ad);
+  document.addEventListener('keydown', cardEscapeHandler);
+};
+
 var renderPin = function (ad) {
   var pinElement = pinTemplate.cloneNode(true);
   var avatar = pinElement.querySelector('img');
@@ -80,12 +89,7 @@ var renderPin = function (ad) {
   avatar.setAttribute('src', ad.author.avatar);
   avatar.setAttribute('alt', ad.offer.title);
   pinElement.addEventListener('click', function () {
-    var oldCard = document.querySelector('.map__card');
-    if (oldCard) {
-      oldCard.remove();
-    }
-    renderCard(ad);
-    document.addEventListener('keydown', cardEscapeHandler);
+    pinClickHandler(ad);
   });
 
   return pinElement;
@@ -149,7 +153,7 @@ var cardEscapeHandler = function (evt) {
   }
 };
 
-var closeHandler = function () {
+var closeCardHandler = function () {
   document.querySelector('.map__card').remove();
   document.removeEventListener('keydown', cardEscapeHandler);
 };
@@ -158,7 +162,7 @@ var closeHandler = function () {
 var renderCard = function (card) {
   var cardElement = cardTemplate.cloneNode(true);
 
-  cardElement.querySelector('.popup__close').addEventListener('click', closeHandler);
+  cardElement.querySelector('.popup__close').addEventListener('click', closeCardHandler);
 
   setProperty(cardElement.querySelector('.popup__title'), card.offer.title, 'textContent', card.offer.title);
 
@@ -277,13 +281,14 @@ rooms.addEventListener('change', guestsChangeHandler);
 guests.addEventListener('change', guestsChangeHandler);
 
 // Валидация полей "Тип жилья" и "Цена на ночь"
+var housePrices = {
+  'palace': 10000,
+  'flat': 1000,
+  'house': 5000,
+  'bungalo': 0
+};
+
 var priceChangeHandler = function () {
-  var housePrices = {
-    'palace': 10000,
-    'flat': 1000,
-    'house': 5000,
-    'bungalo': 0
-  };
   price.min = housePrices[type.value];
   price.placeholder = housePrices[type.value];
 };
