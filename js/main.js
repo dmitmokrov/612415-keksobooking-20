@@ -71,6 +71,15 @@ var createAds = function (number) {
   return ads;
 };
 
+var pinClickHandler = function (ad) {
+  var oldCard = document.querySelector('.map__card');
+  if (oldCard) {
+    oldCard.remove();
+  }
+  renderCard(ad);
+  document.addEventListener('keydown', cardEscapeHandler);
+};
+
 var renderPin = function (ad) {
   var pinElement = pinTemplate.cloneNode(true);
   var avatar = pinElement.querySelector('img');
@@ -79,6 +88,9 @@ var renderPin = function (ad) {
   pinElement.setAttribute('style', 'left: ' + xOffset + 'px; top: ' + yOffset + 'px;');
   avatar.setAttribute('src', ad.author.avatar);
   avatar.setAttribute('alt', ad.offer.title);
+  pinElement.addEventListener('click', function () {
+    pinClickHandler(ad);
+  });
 
   return pinElement;
 };
@@ -134,9 +146,23 @@ var setPhotos = function (arr, parentNode) {
   }
 };
 
+var cardEscapeHandler = function (evt) {
+  if (evt.key === 'Escape') {
+    document.querySelector('.map__card').remove();
+    document.removeEventListener('keydown', cardEscapeHandler);
+  }
+};
+
+var closeCardHandler = function () {
+  document.querySelector('.map__card').remove();
+  document.removeEventListener('keydown', cardEscapeHandler);
+};
+
 // Информация объявления
 var renderCard = function (card) {
   var cardElement = cardTemplate.cloneNode(true);
+
+  cardElement.querySelector('.popup__close').addEventListener('click', closeCardHandler);
 
   setProperty(cardElement.querySelector('.popup__title'), card.offer.title, 'textContent', card.offer.title);
 
@@ -170,6 +196,10 @@ var mainPin = document.querySelector('.map__pin--main');
 var address = adForm.querySelector('#address');
 var rooms = adForm.querySelector('#room_number');
 var guests = adForm.querySelector('#capacity');
+var type = adForm.querySelector('#type');
+var price = adForm.querySelector('#price');
+var timeIn = adForm.querySelector('#timein');
+var timeOut = adForm.querySelector('#timeout');
 
 var setDisable = function (arr) {
   arr.forEach(function (elem) {
@@ -189,7 +219,6 @@ var setMapActiveState = function () {
   setAble(adFormInputs);
   setAble(mapFiltersInputs);
   renderAds(ads);
-  renderCard(ads[0]);
 };
 
 var setAddress = function (isMapActive) {
@@ -202,7 +231,7 @@ var setAddress = function (isMapActive) {
   address.value = mainPinX + ', ' + mainPinY;
 };
 
-var validateGuests = function () {
+var guestsChangeHandler = function () {
   guests.querySelectorAll('option').forEach(function (elem) {
     elem.disabled = true;
   });
@@ -227,7 +256,7 @@ var mainPinMousedownHandler = function (evt) {
   if (evt.button === 0) {
     setMapActiveState();
     setAddress(true);
-    validateGuests();
+    guestsChangeHandler();
   }
   mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
 };
@@ -236,10 +265,11 @@ var mainPinKeydownHandler = function (evt) {
   if (evt.key === 'Enter') {
     setMapActiveState();
     setAddress(true);
-    validateGuests();
+    guestsChangeHandler();
   }
   mainPin.removeEventListener('keydown', mainPinKeydownHandler);
 };
+
 // Переключение карты в активное состояние при клике левой кнопкой мыши на главный пин
 mainPin.addEventListener('mousedown', mainPinMousedownHandler);
 
@@ -247,5 +277,32 @@ mainPin.addEventListener('mousedown', mainPinMousedownHandler);
 mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
 // Валидация количества комнат и гостей
-rooms.addEventListener('change', validateGuests);
-guests.addEventListener('change', validateGuests);
+rooms.addEventListener('change', guestsChangeHandler);
+guests.addEventListener('change', guestsChangeHandler);
+
+// Валидация полей "Тип жилья" и "Цена на ночь"
+var housePrices = {
+  'palace': 10000,
+  'flat': 1000,
+  'house': 5000,
+  'bungalo': 0
+};
+
+var priceChangeHandler = function () {
+  price.min = housePrices[type.value];
+  price.placeholder = housePrices[type.value];
+};
+
+type.addEventListener('change', priceChangeHandler);
+
+// Валидация полей "время заезда и выезда"
+var timeOutChangeHandler = function () {
+  timeIn.value = timeOut.value;
+};
+
+var timeInChangeHandler = function () {
+  timeOut.value = timeIn.value;
+};
+
+timeIn.addEventListener('change', timeInChangeHandler);
+timeOut.addEventListener('change', timeOutChangeHandler);
