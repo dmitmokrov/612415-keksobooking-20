@@ -1,6 +1,6 @@
 'use strict';
 
-window.data = (function () {
+(function () {
   var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
   var OFFER_CHECKIN = ['12:00', '13:00', '14:00'];
   var OFFER_CHECKOUT = ['12:00', '13:00', '14:00'];
@@ -57,7 +57,7 @@ window.data = (function () {
 
   var ads = createAds(8);
 
-  return {
+  window.data = {
     ads: ads
   };
 })();

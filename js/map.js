@@ -1,6 +1,6 @@
 'use strict';
 
-window.map = (function () {
+(function () {
   var map = document.querySelector('.map');
   var mapPins = document.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
@@ -21,7 +21,7 @@ window.map = (function () {
     mapPins.appendChild(fragment);
   };
 
-  return {
+  window.map = {
     map: map,
     pinClickHandler: pinClickHandler,
     renderAds: renderAds

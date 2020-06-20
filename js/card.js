@@ -1,13 +1,14 @@
 'use strict';
 
-window.card = (function () {
-  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+(function () {
   var offerType = {
     'palace': 'Дворец',
     'flat': 'Квартира',
     'house': 'Дом',
     'bungalo': 'Бунгало'
   };
+
+  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
   // Добавление свойства
   var setProperty = function (node, data, property, value) {
@@ -90,7 +91,7 @@ window.card = (function () {
     window.map.map.querySelector('.map__filters-container').insertAdjacentElement('beforebegin', cardElement);
   };
 
-  return {
+  window.card = {
     renderCard: renderCard,
     cardEscapeHandler: cardEscapeHandler
   };

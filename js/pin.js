@@ -1,6 +1,6 @@
 'use strict';
 
-window.pin = (function () {
+(function () {
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
@@ -21,7 +21,7 @@ window.pin = (function () {
     return pinElement;
   };
 
-  return {
+  window.pin = {
     renderPin: renderPin
   };
 })();

@@ -48,12 +48,12 @@
     address.value = mainPinX + ', ' + mainPinY;
   };
 
+  // Добавление координат main pin в поле адреса
+  setAddress();
+
   // Переключение карты в активное состояние при клике левой кнопкой мыши на главный пин
   mainPin.addEventListener('mousedown', mainPinMousedownHandler);
 
   // Переключение карты в активное состояние при нажатии Enter
   mainPin.addEventListener('keydown', mainPinKeydownHandler);
-
-  // Добавление координат main pin в поле адреса
-  setAddress();
 })();

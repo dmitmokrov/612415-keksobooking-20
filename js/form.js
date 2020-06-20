@@ -1,6 +1,13 @@
 'use strict';
 
-window.form = (function () {
+(function () {
+  var housePrices = {
+    'palace': 10000,
+    'flat': 1000,
+    'house': 5000,
+    'bungalo': 0
+  };
+
   var adForm = document.querySelector('.ad-form');
   var adFormInputs = adForm.querySelectorAll('.ad-form fieldset');
   var mapFiltersInputs = document.querySelectorAll('.map__filters select, .map__filters fieldset');
@@ -37,26 +44,11 @@ window.form = (function () {
     }
   };
 
-  // Валидация количества комнат и гостей
-  rooms.addEventListener('change', guestsChangeHandler);
-  guests.addEventListener('change', guestsChangeHandler);
-
-  // Валидация полей "Тип жилья" и "Цена на ночь"
-  var housePrices = {
-    'palace': 10000,
-    'flat': 1000,
-    'house': 5000,
-    'bungalo': 0
-  };
-
   var priceChangeHandler = function () {
     price.min = housePrices[type.value];
     price.placeholder = housePrices[type.value];
   };
 
-  type.addEventListener('change', priceChangeHandler);
-
-  // Валидация полей "время заезда и выезда"
   var timeOutChangeHandler = function () {
     timeIn.value = timeOut.value;
   };
@@ -65,14 +57,22 @@ window.form = (function () {
     timeOut.value = timeIn.value;
   };
 
-  timeIn.addEventListener('change', timeInChangeHandler);
-  timeOut.addEventListener('change', timeOutChangeHandler);
-
   // Добавление атрибута disabled всем элементам ввода в формах .ad-form и .map__filters
   setDisable(adFormInputs);
   setDisable(mapFiltersInputs);
 
-  return {
+  // Валидация количества комнат и гостей
+  rooms.addEventListener('change', guestsChangeHandler);
+  guests.addEventListener('change', guestsChangeHandler);
+
+  // Валидация полей "Тип жилья" и "Цена на ночь"
+  type.addEventListener('change', priceChangeHandler);
+
+  // Валидация полей "время заезда и выезда"
+  timeIn.addEventListener('change', timeInChangeHandler);
+  timeOut.addEventListener('change', timeOutChangeHandler);
+
+  window.form = {
     adForm: adForm,
     setAble: setAble,
     setDisable: setDisable,
