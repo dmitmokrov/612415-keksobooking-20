@@ -42,22 +42,23 @@
           mainPin.style.top = MAP_LIMIT_TOP - MAIN_PIN_HEIGHT - MAIN_PIN_TAIL_HEIGHT + 'px';
         } else if (mainPin.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_TAIL_HEIGHT > MAP_LIMIT_BOTTOM) {
           mainPin.style.top = MAP_LIMIT_BOTTOM - MAIN_PIN_HEIGHT - MAIN_PIN_TAIL_HEIGHT + 'px';
-        } else {
-          var shift = {
-            x: moveEvt.clientX - startCoords.x,
-            y: moveEvt.clientY - startCoords.y
-          };
-
-          startCoords = {
-            x: moveEvt.clientX,
-            y: moveEvt.clientY
-          };
-
-          mainPin.style.left = mainPin.offsetLeft + shift.x + 'px';
-          mainPin.style.top = mainPin.offsetTop + shift.y + 'px';
-
-          setAddress(true);
         }
+
+        var shift = {
+          x: moveEvt.clientX - startCoords.x,
+          y: moveEvt.clientY - startCoords.y
+        };
+
+        startCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+
+        mainPin.style.left = mainPin.offsetLeft + shift.x + 'px';
+        mainPin.style.top = mainPin.offsetTop + shift.y + 'px';
+
+        setAddress(true);
+
       };
 
       var mouseUpHandler = function (upEvt) {
@@ -81,7 +82,6 @@
       window.form.guestsChangeHandler();
     }
     mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
-    mainPin.addEventListener('mousedown', mainPinActiveMousedownHandler);
   };
 
   var mainPinKeydownHandler = function (evt) {
@@ -108,6 +108,7 @@
 
   // Переключение карты в активное состояние при клике левой кнопкой мыши на главный пин
   mainPin.addEventListener('mousedown', mainPinMousedownHandler);
+  mainPin.addEventListener('mousedown', mainPinActiveMousedownHandler);
 
   // Переключение карты в активное состояние при нажатии Enter
   mainPin.addEventListener('keydown', mainPinKeydownHandler);
