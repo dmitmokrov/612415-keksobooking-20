@@ -19,7 +19,7 @@
     adForm.classList.remove('ad-form--disabled');
     window.form.setAble(adFormInputs);
     window.form.setAble(mapFiltersInputs);
-    window.map.renderAds(window.data.ads);
+    window.backend.load(window.map.renderAds, alert);
   };
 
   var mainPinActiveMousedownHandler = function (evt) {
