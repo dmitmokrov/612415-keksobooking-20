@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var MAIN_PIN_LEFT = '570px';
+  var MAIN_PIN_TOP = '375px';
   var MAIN_PIN_WIDTH = 66;
   var MAIN_PIN_HEIGHT = 66;
   var MAIN_PIN_TAIL_HEIGHT = 22;
@@ -20,6 +22,24 @@
     window.form.setAble(adFormInputs);
     window.form.setAble(mapFiltersInputs);
     window.backend.load(window.map.renderAds, alert);
+  };
+
+  var setMapInitialState = function () {
+    map.classList.add('map--faded');
+    adForm.classList.add('ad-form--disabled');
+    window.form.setDisable(adFormInputs);
+    window.form.setDisable(mapFiltersInputs);
+    document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (elem) {
+      elem.remove();
+    });
+
+    if (document.querySelector('.map__card')) {
+      document.querySelector('.map__card').remove();
+    }
+
+    mainPin.style.left = MAIN_PIN_LEFT;
+    mainPin.style.top = MAIN_PIN_TOP;
+    setAddress();
   };
 
   var mainPinActiveMousedownHandler = function (evt) {
@@ -112,4 +132,16 @@
 
   // Переключение карты в активное состояние при нажатии Enter
   mainPin.addEventListener('keydown', mainPinKeydownHandler);
+
+  // Обработчик отправки формы
+  adForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(adForm), function () {
+      adForm.reset();
+      setMapInitialState();
+      mainPin.addEventListener('mousedown', mainPinMousedownHandler);
+      mainPin.addEventListener('mousedown', mainPinActiveMousedownHandler);
+      mainPin.addEventListener('keydown', mainPinKeydownHandler);
+    });
+  });
 })();
