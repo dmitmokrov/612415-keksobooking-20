@@ -8,6 +8,8 @@
     'bungalo': 0
   };
 
+  var mainPin = document.querySelector('.map__pin--main');
+
   var adForm = document.querySelector('.ad-form');
   var adFormInputs = adForm.querySelectorAll('.ad-form fieldset');
   var mapFiltersInputs = document.querySelectorAll('.map__filters select, .map__filters fieldset');
@@ -57,6 +59,42 @@
     timeOut.value = timeIn.value;
   };
 
+  // Рендер сообщения при отправке формы
+  var errorButtonClickHandler = function (evt) {
+    evt.preventDefault();
+    document.querySelector('.message').remove();
+  };
+
+  var messageEscapeHandler = function (evt) {
+    evt.preventDefault();
+    if (evt.key === 'Escape') {
+      document.querySelector('.message').remove();
+      document.removeEventListener('keydown', messageEscapeHandler);
+      document.removeEventListener('click', messageClickHandler);
+    }
+  };
+
+  var messageClickHandler = function (evt) {
+    evt.preventDefault();
+    if (evt.button === 0) {
+      document.querySelector('.message').remove();
+      document.removeEventListener('click', messageClickHandler);
+      document.removeEventListener('keydown', messageEscapeHandler);
+    }
+  };
+
+  var renderMessage = function (messageType) {
+    var message = document.querySelector('#' + messageType).content.querySelector('.' + messageType).cloneNode(true);
+
+    if (document.querySelector('.message .error__button')) {
+      document.querySelector('.message .error__button').addEventListener('click', errorButtonClickHandler);
+    }
+
+    document.addEventListener('keydown', messageEscapeHandler);
+    document.addEventListener('click', messageClickHandler);
+    document.querySelector('main').appendChild(message);
+  };
+
   // Добавление атрибута disabled всем элементам ввода в формах .ad-form и .map__filters
   setDisable(adFormInputs);
   setDisable(mapFiltersInputs);
@@ -71,6 +109,21 @@
   // Валидация полей "время заезда и выезда"
   timeIn.addEventListener('change', timeInChangeHandler);
   timeOut.addEventListener('change', timeOutChangeHandler);
+
+  // Обработчик отправки формы
+  adForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(adForm), function () {
+      renderMessage('success');
+      adForm.reset();
+      window.main.setMapInitialState();
+      mainPin.addEventListener('mousedown', window.main.mainPinMousedownHandler);
+      mainPin.addEventListener('mousedown', window.main.mainPinActiveMousedownHandler);
+      mainPin.addEventListener('keydown', window.main.mainPinKeydownHandler);
+    }, function () {
+      renderMessage('error');
+    });
+  });
 
   window.form = {
     adForm: adForm,
