@@ -133,15 +133,10 @@
   // Переключение карты в активное состояние при нажатии Enter
   mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
-  // Обработчик отправки формы
-  adForm.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    window.backend.save(new FormData(adForm), function () {
-      adForm.reset();
-      setMapInitialState();
-      mainPin.addEventListener('mousedown', mainPinMousedownHandler);
-      mainPin.addEventListener('mousedown', mainPinActiveMousedownHandler);
-      mainPin.addEventListener('keydown', mainPinKeydownHandler);
-    });
-  });
+  window.main = {
+    setMapInitialState: setMapInitialState,
+    mainPinMousedownHandler: mainPinMousedownHandler,
+    mainPinActiveMousedownHandler: mainPinActiveMousedownHandler,
+    mainPinKeydownHandler: mainPinKeydownHandler
+  };
 })();
