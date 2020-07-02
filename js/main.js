@@ -15,13 +15,23 @@
   var adFormInputs = adForm.querySelectorAll('.ad-form fieldset');
   var mainPin = document.querySelector('.map__pin--main');
   var mapFiltersInputs = document.querySelectorAll('.map__filters select, .map__filters fieldset');
+  var adsData = [];
+
+  var successLoadHandler = function (data) {
+    adsData = data;
+    window.map.renderAds(data);
+  };
+
+  var errorLoadHandler = function () {
+    window.form.setDisable(mapFiltersInputs);
+  };
 
   var setMapActiveState = function () {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     window.form.setAble(adFormInputs);
     window.form.setAble(mapFiltersInputs);
-    window.backend.load(window.map.renderAds, alert);
+    window.backend.load(successLoadHandler, errorLoadHandler);
   };
 
   var setMapInitialState = function () {
@@ -132,6 +142,20 @@
 
   // Переключение карты в активное состояние при нажатии Enter
   mainPin.addEventListener('keydown', mainPinKeydownHandler);
+
+  // Фильтрация по полю "Тип жилья"
+  window.map.housingType.addEventListener('change', function () {
+    window.map.renderAds(adsData);
+  });
+
+  // Закрытие окна карточки при изменении любого фильтра
+  mapFiltersInputs.forEach(function (elem) {
+    elem.addEventListener('change', function () {
+      if (document.querySelector('.map__card')) {
+        document.querySelector('.map__card').remove();
+      }
+    });
+  });
 
   window.main = {
     setMapInitialState: setMapInitialState,
