@@ -14,14 +14,26 @@
   var address = adForm.querySelector('#address');
   var adFormInputs = adForm.querySelectorAll('.ad-form fieldset');
   var mainPin = document.querySelector('.map__pin--main');
-  var mapFiltersInputs = document.querySelectorAll('.map__filters select, .map__filters fieldset');
+  var mapFilters = document.querySelector('.map__filters');
+  var mapFiltersInputs = mapFilters.querySelectorAll('select, fieldset');
+
+  var adsData = [];
+
+  var successLoadHandler = function (data) {
+    adsData = data;
+    window.map.renderAds(data);
+  };
+
+  var errorLoadHandler = function () {
+    window.form.setDisable(mapFiltersInputs);
+  };
 
   var setMapActiveState = function () {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     window.form.setAble(adFormInputs);
     window.form.setAble(mapFiltersInputs);
-    window.backend.load(window.map.renderAds, alert);
+    window.backend.load(successLoadHandler, errorLoadHandler);
   };
 
   var setMapInitialState = function () {
@@ -33,12 +45,9 @@
       elem.remove();
     });
 
-    if (document.querySelector('.map__card')) {
-      document.querySelector('.map__card').remove();
-    }
-
     mainPin.style.left = MAIN_PIN_LEFT;
     mainPin.style.top = MAIN_PIN_TOP;
+    window.card.closeCard();
     setAddress();
   };
 
@@ -78,7 +87,6 @@
         mainPin.style.top = mainPin.offsetTop + shift.y + 'px';
 
         setAddress(true);
-
       };
 
       var mouseUpHandler = function (upEvt) {
@@ -132,6 +140,12 @@
 
   // Переключение карты в активное состояние при нажатии Enter
   mainPin.addEventListener('keydown', mainPinKeydownHandler);
+
+  // При изменении любого фильтра происходит закрытие окна карточки и рендер карточек
+  mapFilters.addEventListener('change', function () {
+    window.card.closeCard();
+    window.map.renderAds(adsData);
+  });
 
   window.main = {
     setMapInitialState: setMapInitialState,
