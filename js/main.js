@@ -14,7 +14,9 @@
   var address = adForm.querySelector('#address');
   var adFormInputs = adForm.querySelectorAll('.ad-form fieldset');
   var mainPin = document.querySelector('.map__pin--main');
-  var mapFiltersInputs = document.querySelectorAll('.map__filters select, .map__filters fieldset');
+  var mapFilters = document.querySelector('.map__filters');
+  var mapFiltersInputs = mapFilters.querySelectorAll('select, fieldset');
+
   var adsData = [];
 
   var successLoadHandler = function (data) {
@@ -43,12 +45,9 @@
       elem.remove();
     });
 
-    if (document.querySelector('.map__card')) {
-      document.querySelector('.map__card').remove();
-    }
-
     mainPin.style.left = MAIN_PIN_LEFT;
     mainPin.style.top = MAIN_PIN_TOP;
+    window.card.closeCard();
     setAddress();
   };
 
@@ -88,7 +87,6 @@
         mainPin.style.top = mainPin.offsetTop + shift.y + 'px';
 
         setAddress(true);
-
       };
 
       var mouseUpHandler = function (upEvt) {
@@ -143,18 +141,10 @@
   // Переключение карты в активное состояние при нажатии Enter
   mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
-  // Фильтрация по полю "Тип жилья"
-  window.map.housingType.addEventListener('change', function () {
+  // При изменении любого фильтра происходит закрытие окна карточки и рендер карточек
+  mapFilters.addEventListener('change', function () {
+    window.card.closeCard();
     window.map.renderAds(adsData);
-  });
-
-  // Закрытие окна карточки при изменении любого фильтра
-  mapFiltersInputs.forEach(function (elem) {
-    elem.addEventListener('change', function () {
-      if (document.querySelector('.map__card')) {
-        document.querySelector('.map__card').remove();
-      }
-    });
   });
 
   window.main = {

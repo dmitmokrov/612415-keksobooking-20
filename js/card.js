@@ -63,6 +63,12 @@
     document.removeEventListener('keydown', cardEscapeHandler);
   };
 
+  var closeCard = function () {
+    if (document.querySelector('.map__card')) {
+      closeCardHandler();
+    }
+  };
+
   var renderCard = function (card) {
     var cardElement = cardTemplate.cloneNode(true);
 
@@ -93,6 +99,7 @@
 
   window.card = {
     renderCard: renderCard,
+    closeCard: closeCard,
     cardEscapeHandler: cardEscapeHandler
   };
 })();
