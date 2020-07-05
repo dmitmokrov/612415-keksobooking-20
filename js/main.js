@@ -144,7 +144,9 @@
   // При изменении любого фильтра происходит закрытие окна карточки и рендер карточек
   mapFilters.addEventListener('change', function () {
     window.card.closeCard();
-    window.map.renderAds(adsData);
+    window.debounce(function () {
+      window.map.renderAds(adsData);
+    });
   });
 
   window.main = {
