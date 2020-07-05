@@ -142,11 +142,14 @@
   mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
   // При изменении любого фильтра происходит закрытие окна карточки и рендер карточек
+  var renderAds = function () {
+    window.map.renderAds(adsData);
+  };
+  var mapFiltersChangeHandler = window.debounce(renderAds);
+
+  mapFilters.addEventListener('change', mapFiltersChangeHandler);
   mapFilters.addEventListener('change', function () {
     window.card.closeCard();
-    window.debounce(function () {
-      window.map.renderAds(adsData);
-    });
   });
 
   window.main = {
