@@ -11,6 +11,10 @@
   var mainPin = document.querySelector('.map__pin--main');
 
   var adForm = document.querySelector('.ad-form');
+  var adFormAvatar = adForm.querySelector('.ad-form-header__input');
+  var adFormAvatarPreview = adForm.querySelector('.ad-form-header__preview img');
+  var adFormAdPhoto = adForm.querySelector('.ad-form__input');
+  var adFormAdPhotoPreview = adForm.querySelector('.ad-form__photo img');
   var adFormInputs = adForm.querySelectorAll('.ad-form fieldset');
   var mapFiltersInputs = document.querySelectorAll('.map__filters select, .map__filters fieldset');
   var rooms = adForm.querySelector('#room_number');
@@ -109,6 +113,10 @@
   // Валидация полей "время заезда и выезда"
   timeIn.addEventListener('change', timeInChangeHandler);
   timeOut.addEventListener('change', timeOutChangeHandler);
+
+  // Загрузка аватара и фото жилья
+  window.upload(adFormAvatar, adFormAvatarPreview);
+  window.upload(adFormAdPhoto, adFormAdPhotoPreview);
 
   // Обработчик отправки формы
   adForm.addEventListener('submit', function (evt) {
