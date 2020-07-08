@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var AVATAR_SRC = 'img/muffin-grey.svg';
+
   var housePrices = {
     'palace': 10000,
     'flat': 1000,
@@ -11,8 +13,13 @@
   var mainPin = document.querySelector('.map__pin--main');
 
   var adForm = document.querySelector('.ad-form');
+  var adFormAvatar = adForm.querySelector('.ad-form-header__input');
+  var adFormAvatarPreview = adForm.querySelector('.ad-form-header__preview img');
+  var adFormAdPhoto = adForm.querySelector('.ad-form__input');
+  var adFormAdPhotoPreview = adForm.querySelector('.ad-form__photo img');
   var adFormInputs = adForm.querySelectorAll('.ad-form fieldset');
   var mapFiltersInputs = document.querySelectorAll('.map__filters select, .map__filters fieldset');
+  var adFormReset = adForm.querySelector('.ad-form__reset');
   var rooms = adForm.querySelector('#room_number');
   var guests = adForm.querySelector('#capacity');
   var type = adForm.querySelector('#type');
@@ -95,6 +102,16 @@
     document.querySelector('main').appendChild(message);
   };
 
+  var resetForm = function () {
+    adFormAvatarPreview.src = AVATAR_SRC;
+    adFormAdPhotoPreview.src = '#';
+    adForm.reset();
+    window.main.setMapInitialState();
+    mainPin.addEventListener('mousedown', window.main.mainPinMousedownHandler);
+    mainPin.addEventListener('mousedown', window.main.mainPinActiveMousedownHandler);
+    mainPin.addEventListener('keydown', window.main.mainPinKeydownHandler);
+  };
+
   // Добавление атрибута disabled всем элементам ввода в формах .ad-form и .map__filters
   setDisable(adFormInputs);
   setDisable(mapFiltersInputs);
@@ -110,16 +127,22 @@
   timeIn.addEventListener('change', timeInChangeHandler);
   timeOut.addEventListener('change', timeOutChangeHandler);
 
+  // Загрузка аватара и фото жилья
+  window.upload(adFormAvatar, adFormAvatarPreview);
+  window.upload(adFormAdPhoto, adFormAdPhotoPreview);
+
+  // Сброс формы по кнопке
+  adFormReset.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    resetForm();
+  });
+
   // Обработчик отправки формы
   adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.backend.save(new FormData(adForm), function () {
       renderMessage('success');
-      adForm.reset();
-      window.main.setMapInitialState();
-      mainPin.addEventListener('mousedown', window.main.mainPinMousedownHandler);
-      mainPin.addEventListener('mousedown', window.main.mainPinActiveMousedownHandler);
-      mainPin.addEventListener('keydown', window.main.mainPinKeydownHandler);
+      resetForm();
     }, function () {
       renderMessage('error');
     });
