@@ -39,6 +39,12 @@
   var setMapInitialState = function () {
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
+    mapFilters.querySelectorAll('select').forEach(function (elem) {
+      elem.value = 'any';
+    });
+    mapFilters.querySelectorAll('#housing-features input').forEach(function (elem) {
+      elem.checked = false;
+    });
     window.form.setDisable(adFormInputs);
     window.form.setDisable(mapFiltersInputs);
     document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (elem) {
