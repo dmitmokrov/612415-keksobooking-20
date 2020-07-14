@@ -19,6 +19,10 @@
 
   var adsData = [];
 
+  var renderAds = function () {
+    window.map.renderAds(adsData);
+  };
+
   var successLoadHandler = function (data) {
     adsData = data;
     window.map.renderAds(data);
@@ -137,26 +141,19 @@
     address.value = mainPinX + ', ' + mainPinY;
   };
 
-  // Добавление координат main pin в поле адреса
-  setAddress();
+  var mapFiltersChangeHandler = window.debounce(renderAds);
 
-  // Переключение карты в активное состояние при клике левой кнопкой мыши на главный пин
   mainPin.addEventListener('mousedown', mainPinMousedownHandler);
   mainPin.addEventListener('mousedown', mainPinActiveMousedownHandler);
 
-  // Переключение карты в активное состояние при нажатии Enter
   mainPin.addEventListener('keydown', mainPinKeydownHandler);
-
-  // При изменении любого фильтра происходит закрытие окна карточки и рендер карточек
-  var renderAds = function () {
-    window.map.renderAds(adsData);
-  };
-  var mapFiltersChangeHandler = window.debounce(renderAds);
 
   mapFilters.addEventListener('change', mapFiltersChangeHandler);
   mapFilters.addEventListener('change', function () {
     window.card.closeCard();
   });
+
+  setAddress();
 
   window.main = {
     setMapInitialState: setMapInitialState,

@@ -66,7 +66,6 @@
     timeOut.value = timeIn.value;
   };
 
-  // Рендер сообщения при отправке формы
   var errorButtonClickHandler = function (evt) {
     evt.preventDefault();
     document.querySelector('.message').remove();
@@ -112,33 +111,7 @@
     mainPin.addEventListener('keydown', window.main.mainPinKeydownHandler);
   };
 
-  // Добавление атрибута disabled всем элементам ввода в формах .ad-form и .map__filters
-  setDisable(adFormInputs);
-  setDisable(mapFiltersInputs);
-
-  // Валидация количества комнат и гостей
-  rooms.addEventListener('change', guestsChangeHandler);
-  guests.addEventListener('change', guestsChangeHandler);
-
-  // Валидация полей "Тип жилья" и "Цена на ночь"
-  type.addEventListener('change', priceChangeHandler);
-
-  // Валидация полей "время заезда и выезда"
-  timeIn.addEventListener('change', timeInChangeHandler);
-  timeOut.addEventListener('change', timeOutChangeHandler);
-
-  // Загрузка аватара и фото жилья
-  window.upload(adFormAvatar, adFormAvatarPreview);
-  window.upload(adFormAdPhoto, adFormAdPhotoPreview);
-
-  // Сброс формы по кнопке
-  adFormReset.addEventListener('click', function (evt) {
-    evt.preventDefault();
-    resetForm();
-  });
-
-  // Обработчик отправки формы
-  adForm.addEventListener('submit', function (evt) {
+  var adFormSubmitHandler = function (evt) {
     evt.preventDefault();
     window.backend.save(new FormData(adForm), function () {
       renderMessage('success');
@@ -146,7 +119,30 @@
     }, function () {
       renderMessage('error');
     });
-  });
+  };
+
+  var adFormResetHandler = function (evt) {
+    evt.preventDefault();
+    resetForm();
+  };
+
+  rooms.addEventListener('change', guestsChangeHandler);
+  guests.addEventListener('change', guestsChangeHandler);
+
+  type.addEventListener('change', priceChangeHandler);
+
+  timeIn.addEventListener('change', timeInChangeHandler);
+  timeOut.addEventListener('change', timeOutChangeHandler);
+
+  adFormReset.addEventListener('click', adFormResetHandler);
+
+  adForm.addEventListener('submit', adFormSubmitHandler);
+
+  setDisable(adFormInputs);
+  setDisable(mapFiltersInputs);
+
+  window.upload(adFormAvatar, adFormAvatarPreview);
+  window.upload(adFormAdPhoto, adFormAdPhotoPreview);
 
   window.form = {
     adForm: adForm,
