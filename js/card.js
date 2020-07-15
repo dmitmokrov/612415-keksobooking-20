@@ -10,7 +10,6 @@
 
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
-  // Добавление свойства
   var setProperty = function (node, data, property, value) {
     if (data) {
       node[property] = value;
@@ -19,7 +18,6 @@
     }
   };
 
-  // Добавление услуг
   var setFeatures = function (arr, parentNode) {
     if (arr.length) {
       parentNode.innerHTML = '';
@@ -34,7 +32,6 @@
     }
   };
 
-  // Добавление фотографий
   var setPhotos = function (arr, parentNode) {
     if (arr.length) {
       parentNode.innerHTML = '';

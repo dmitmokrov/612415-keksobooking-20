@@ -3,11 +3,16 @@
 (function () {
   var URL = 'https://javascript.pages.academy/keksobooking';
 
+  var createXhr = function () {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+    xhr.timeout = 10000;
+    return xhr;
+  };
+
   window.backend = {
     load: function (onSuccess, onError) {
-      var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
-      xhr.timeout = 10000;
+      var xhr = createXhr();
 
       xhr.addEventListener('load', function () {
         if (xhr.status === 200) {
@@ -29,9 +34,7 @@
       xhr.send();
     },
     save: function (data, onSuccess, onError) {
-      var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
-      xhr.timeout = 10000;
+      var xhr = createXhr();
 
       xhr.addEventListener('load', function () {
         if (xhr.status === 200) {

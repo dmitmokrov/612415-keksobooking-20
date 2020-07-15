@@ -2,6 +2,7 @@
 
 (function () {
   var FILE_TYPES = ['gif', 'png', 'jpg', 'jpeg'];
+
   var upload = function (fileChooser, preview) {
     fileChooser.addEventListener('change', function () {
       var file = fileChooser.files[0];
