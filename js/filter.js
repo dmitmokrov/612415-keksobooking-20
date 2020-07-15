@@ -15,11 +15,11 @@
   var housingGuests = mapFilters.querySelector('#housing-guests');
   var housingFeatures = mapFilters.querySelector('#housing-features');
 
-  var filterHousingType = function (elem) {
+  var getFilterHousingType = function (elem) {
     return housingType.value === 'any' ? true : elem.offer.type === housingType.value;
   };
 
-  var filterHousingPrice = function (elem) {
+  var getFilterHousingPrice = function (elem) {
     switch (housingPrice.value) {
       case Price.LOW:
         return elem.offer.price < Price.MIN;
@@ -32,15 +32,15 @@
     }
   };
 
-  var filterHousingRooms = function (elem) {
+  var getFilterHousingRooms = function (elem) {
     return housingRooms.value === 'any' ? true : elem.offer.rooms.toString() === housingRooms.value;
   };
 
-  var filterHousingGuests = function (elem) {
+  var getFilterHousingGuests = function (elem) {
     return housingGuests.value === 'any' ? true : elem.offer.guests.toString() === housingGuests.value;
   };
 
-  var filterHousingFeatures = function (elem) {
+  var getFilterHousingFeatures = function (elem) {
     var checkedFeatures = Array.from(housingFeatures.querySelectorAll(':checked')).map(function (checkbox) {
       return checkbox.value;
     });
@@ -60,7 +60,7 @@
 
   var filterAds = function (arr) {
     return arr.filter(function (elem) {
-      return filterHousingType(elem) && filterHousingPrice(elem) && filterHousingRooms(elem) && filterHousingGuests(elem) && filterHousingFeatures(elem);
+      return getFilterHousingType(elem) && getFilterHousingPrice(elem) && getFilterHousingRooms(elem) && getFilterHousingGuests(elem) && getFilterHousingFeatures(elem);
     });
   };
 
